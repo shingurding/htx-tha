@@ -1,3 +1,6 @@
 .venv
-common_voice/
+*/common_voice/*.csv
+*/common_voice/cv-valid-test/
+*/common_voice/cv-valid-train/
+*/common_voice/cv-valid-dev/
 .DS_Store
