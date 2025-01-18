@@ -1,7 +1,13 @@
 """
 cv-decode.py
 
-This script is used to call the API from `asr_api.py` to transcribe the 4,076 common-voice mp3 files under `cv-valid-dev` folder.
+This script interacts with the ASR API provided by the `asr_api.py` script to transcribe a collection of mp3 audio files located in `common_voice/cv-valid-dev` folder of the Common Voice dataset.
+The transcriptions are generated for the 4,076 audio files and saved in a new CSV file (`cv-valid-dev-generated.csv`).
+
+The script does the following:
+1. Reads the CSV file (`common_voice/cv-valid-dev.csv`) to get the metadata of the audio files.
+2. For each audio file, it sends a POST request to the ASR API to get the transcription.
+3. The CSV file (`cv-valid-dev-generated.csv`) is updated with the transcriptions.
 """
 import os
 import requests
@@ -10,7 +16,13 @@ from tqdm import tqdm
 
 def get_transcription(audio_filepath):
     """
-    Sends a POST request to the ASR API to get the transcription.
+    Sends a POST request to the ASR API to get the transcription for the given audio.
+
+    Args:
+        audio_filepath (str): The path to the audio file that needs to be transcribed.
+
+    Returns:
+        str: The transcription text returned by the ASR API.
     """
     with open(audio_filepath, 'rb') as f:
         files = {
@@ -27,6 +39,10 @@ def get_transcription(audio_filepath):
 
 
 def main():
+    """
+    The main function to load the audio file metadata, send requests to the ASR API for transcription,
+    and update the CSV file with the transcriptions.
+    """
     audio_path = os.path.join("asr", "common_voice", "cv-valid-dev")
     
     # Read cv_valid_dev csv file

@@ -1,7 +1,12 @@
 """
 asr_api.py
 
-Creates a Flask App for the API.
+(Task 2) This model implements a Flask-based API for automatic speech recognition (ASR). It provides a service to transcribe audio files uplaoded via POST requests.
+The API uses the pre-trained `Wav2Vec2` model from HuggingFace to process and transcribe the audio. Given the path to the audio file, the transcription of the audio and its duration is returned.
+
+The module contains two endpoints:
+1. `/ping`: A health check endpoint to verify that the service is running.
+2. `/asr`: The main ASR endpoint that processes audio files and returns the transcription and audio duration as a JSON response.
 """
 import os
 import torch
@@ -23,7 +28,10 @@ os.makedirs(TEMP_DIR, exist_ok=True)
 @app.route('/ping', methods=['GET'])
 def ping():
     """
-    An endpoint to check if the service is working.
+    A simple health check endpoint to check if the service is working.
+
+    Returns:
+        JSON response object with a message "pong" to confirm the service is alive.
     """
     return jsonify({
         "response": "pong"
@@ -32,11 +40,14 @@ def ping():
 @app.route('/asr', methods=['POST'])
 def asr():
     """
-    An endpoint to transcribe an audio.
+    An endpoint to transcribe an audio file using the pre-trained Wav2Vec2 model.
 
     Returns:
-        transcription (str): The transcribed text returned by the model.
-        duration (str): The duration of the file in seconds.
+        JSON response containing:
+            - transcription (str): The transcribed text returned by the model.
+            - duration (str): The duration of the file in seconds.
+
+        In the case of an error, it returns a 500 status code and the error message.
     """
     try:
         # Read the audio file into the temp dir
@@ -74,7 +85,7 @@ def asr():
         }), 500
     
     finally:
-        # Delete audio once it's done processing
+        # Delete the temoorary audio file once it's done processing
         if os.path.exists(file_path):
             os.remove(file_path)
 
